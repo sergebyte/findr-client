@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "findr-client",
-    "slug": "findr-client",
+    "slug": "findr",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3a4399dd-b7ac-47a9-b7cb-da560b454ffa"
+      }
+    },
+    "owner": "sergebyte"
   }
 }
