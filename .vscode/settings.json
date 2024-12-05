@@ -1,0 +1,18 @@
+{
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "eslint.enable": true,
+  "eslint.validate": ["typescriptreact"],
+
+  // Prettier configuration specific to frontend
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Client-specific exclusions
+  "files.exclude": {
+    "**/build": true,
+    "**/*.log": true
+  },
+  "files.watcherExclude": {
+    "**/build": true,
+    "**/*.log": true
+  }
+}

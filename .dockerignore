@@ -1,0 +1,45 @@
+# Ignore node_modules
+node_modules
+npm-debug.log
+yarn-error.log
+yarn.lock
+*.lock
+
+# Logs and temp files
+logs/
+*.log
+*.tmp
+*.swp
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Docker-specific files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git specific files
+.git
+.gitignore
+.github
+
+# IDE specific files
+.vscode
+.idea
+*.swp
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Test files and data
+*.spec.ts
+test/
