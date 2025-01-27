@@ -1,46 +1,56 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Appearance, ColorSchemeName } from 'react-native'
-import { darkTheme, lightTheme } from '../styles/theme'
-import { useGlobalSearchParams, useRouter } from 'expo-router'
+import { darkTheme, lightTheme } from '@/styles/theme'
+import { useRouter } from 'expo-router'
+
+type ThemePreference = 'light' | 'dark' | 'system'
 
 export const useAppTheme = () => {
   const router = useRouter()
-  const { colorScheme: globalColorScheme } = useGlobalSearchParams() // Global URL parameter
-  const systemColorScheme: ColorSchemeName = Appearance.getColorScheme() ?? 'light' // System preference
+  const systemColorScheme: ColorSchemeName = Appearance.getColorScheme() ?? 'light'
 
-  // Determine the initial theme, prioritizing the global URL parameter
-  const getInitialColorScheme = useCallback(() => {
-    return globalColorScheme ?? systemColorScheme
-  }, [globalColorScheme, systemColorScheme])
+  const [themePreference, setThemePreference] = useState<ThemePreference>('system')
 
-  const [colorScheme, setColorScheme] = useState(getInitialColorScheme)
+  const [effectiveColorScheme, setEffectiveColorScheme] = useState<ColorSchemeName>(
+    themePreference === 'system' ? systemColorScheme : themePreference,
+  )
 
-  // Synchronize with global URL parameter and system theme changes
   useEffect(() => {
-    const listener = Appearance.addChangeListener(({ colorScheme }) => {
-      if (!globalColorScheme) {
-        setColorScheme(colorScheme ?? 'light')
-      }
-    })
+    if (themePreference === 'system') {
+      const listener = Appearance.addChangeListener(({ colorScheme }) => {
+        setEffectiveColorScheme(colorScheme ?? 'light')
+      })
 
-    if (globalColorScheme && globalColorScheme !== colorScheme) {
-      setColorScheme(globalColorScheme)
+      return () => listener.remove()
     }
+  }, [themePreference])
 
-    return () => listener.remove() // Cleanup listener on unmount
-  }, [globalColorScheme, colorScheme])
+  useEffect(() => {
+    if (themePreference !== 'system') {
+      setEffectiveColorScheme(themePreference)
+    }
+  }, [themePreference])
 
-  // Toggle theme manually and update the global URL parameter
-  const toggleTheme = useCallback(() => {
-    const newColorScheme = colorScheme === 'light' ? 'dark' : 'light'
-    setColorScheme(newColorScheme)
-    router.setParams({ colorScheme: newColorScheme }) // Update URL parameter
-  }, [colorScheme, router])
+  const setTheme = useCallback(
+    (preference: ThemePreference) => {
+      setThemePreference(preference)
+      if (preference !== 'system') {
+        setEffectiveColorScheme(preference)
+      }
+      router.setParams({ theme: preference })
+    },
+    [router],
+  )
 
-  // Memoize the current theme
-  const currentTheme = useMemo(() => {
-    return colorScheme === 'dark' ? darkTheme : lightTheme
-  }, [colorScheme])
+  const currentTheme = useMemo(
+    () => (effectiveColorScheme === 'dark' ? darkTheme : lightTheme),
+    [effectiveColorScheme],
+  )
 
-  return { currentTheme, isDarkMode: colorScheme === 'dark', toggleTheme }
+  return {
+    currentTheme,
+    isDarkMode: effectiveColorScheme === 'dark',
+    themePreference,
+    setTheme,
+  }
 }

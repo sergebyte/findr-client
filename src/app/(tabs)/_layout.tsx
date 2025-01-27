@@ -1,20 +1,20 @@
 import { Feather } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 
-const TabsNavigation = () => {
+export default function TabsNavigation() {
   return (
     <Tabs>
       <Tabs.Screen
-        name="posts"
+        name="(view)/list"
         options={{
           headerShown: false,
-          title: 'Posts',
+          title: 'List',
           tabBarIcon: ({ color }) => <Feather name="book" color={color} size={24} />,
         }}
       />
 
       <Tabs.Screen
-        name="index"
+        name="(view)/index"
         options={{
           headerShown: false,
           title: 'Map',
@@ -23,7 +23,7 @@ const TabsNavigation = () => {
       />
 
       <Tabs.Screen
-        name="profile"
+        name="profile/index"
         options={{
           headerShown: false,
           title: 'Profile',
@@ -33,5 +33,3 @@ const TabsNavigation = () => {
     </Tabs>
   )
 }
-
-export default TabsNavigation

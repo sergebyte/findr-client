@@ -1,41 +1,41 @@
+import { MD3LightTheme, MD3DarkTheme, adaptNavigationTheme } from 'react-native-paper'
 import {
-  MD3LightTheme as PaperLightTeme,
-  MD3DarkTheme as PaperDarkTheme,
-  adaptNavigationTheme,
-} from 'react-native-paper'
-import {
-  DarkTheme as NavigationDarkTheme,
-  DefaultTheme as NavigationLightTheme,
+  DefaultTheme as NavigationLight,
+  DarkTheme as NavigationDark,
 } from '@react-navigation/native'
-import { COLORS } from '../constants/colors'
+import { COLORS } from '@/constants/Colors'
 import merge from 'deepmerge'
 
-const { LightTheme: AdaptedLightTheme, DarkTheme: AdaptedDarkTheme } = adaptNavigationTheme({
-  reactNavigationLight: NavigationLightTheme,
-  reactNavigationDark: NavigationDarkTheme,
+const { LightTheme, DarkTheme } = adaptNavigationTheme({
+  reactNavigationLight: NavigationLight,
+  reactNavigationDark: NavigationDark,
 })
 
+const mergedLightTheme = merge(MD3LightTheme, LightTheme)
+const mergedDarkTheme = merge(MD3DarkTheme, DarkTheme)
+
 export const lightTheme = {
-  ...AdaptedLightTheme,
-  ...PaperLightTeme,
+  ...mergedLightTheme,
   colors: {
-    ...AdaptedLightTheme.colors,
-    ...PaperLightTeme.colors,
+    ...NavigationLight.colors,
+    ...mergedLightTheme.colors,
     ...COLORS.light,
+  },
+  fonts: {
+    ...NavigationLight.fonts,
+    ...mergedLightTheme.fonts,
   },
 }
 
 export const darkTheme = {
-  ...AdaptedDarkTheme,
-  ...PaperDarkTheme,
+  ...mergedDarkTheme,
   colors: {
-    ...AdaptedDarkTheme.colors,
-    ...PaperDarkTheme.colors,
+    ...NavigationDark.colors,
+    ...mergedDarkTheme.colors,
     ...COLORS.dark,
   },
-}
-
-export const theme = {
-  light: lightTheme,
-  dark: darkTheme,
+  fonts: {
+    ...NavigationDark.fonts,
+    ...mergedDarkTheme.fonts,
+  },
 }

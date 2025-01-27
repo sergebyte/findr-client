@@ -1096,3 +1096,6 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+ios/
+android/
+

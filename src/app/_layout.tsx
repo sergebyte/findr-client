@@ -1,19 +1,29 @@
 import { useAppTheme } from '@/hooks/useAppTheme'
-import { Stack } from 'expo-router'
+import { Stack, useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { PaperProvider } from 'react-native-paper'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import React from 'react'
 import { ThemeProvider } from '@react-navigation/native'
+import { Auth0Provider, useAuth0 } from 'react-native-auth0'
+import React, { useEffect } from 'react'
 
-const App: React.FC = () => {
+export const unstable_settings = {
+  initialRouteName: '(tabs)',
+}
+
+export default function App() {
   const { currentTheme } = useAppTheme()
 
   return (
     <SafeAreaProvider>
       <PaperProvider theme={currentTheme}>
         <ThemeProvider value={currentTheme}>
-          <RootNavigation />
+          <Auth0Provider
+            domain={process.env.EXPO_PUBLIC_AUTH0_DOMAIN}
+            clientId={process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID}
+          >
+            <RootNavigation />
+          </Auth0Provider>
         </ThemeProvider>
       </PaperProvider>
       <StatusBar style={currentTheme.dark ? 'light' : 'dark'} />
@@ -21,12 +31,19 @@ const App: React.FC = () => {
   )
 }
 
-const RootNavigation: React.FC = () => {
+const RootNavigation = () => {
+  const { user, isLoading } = useAuth0()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!user && !isLoading) {
+      router.replace('/auth')
+    }
+  }, [isLoading, router, user])
+
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    <Stack screenOptions={{ headerShown: false }}>
+      {user ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="(auth)" />}
     </Stack>
   )
 }
-
-export default App
